@@ -8,9 +8,12 @@
 #include "console.h"
 #include "strlib.h"
 #include "stack.h"
+#include "lexicon.h"
+#include "simpio.h"
 
 using namespace std;
 
+void runWordLadder();
 string getWordOne(Lexicon &dic);
 string getWordTwo(string w1, Lexicon &dic);
 Lexicon openDictionary();
@@ -69,7 +72,7 @@ string getWordOne(Lexicon &dic) {
 string getWordTwo(string w1, Lexicon &dic) {
     string w2;
     while (true)  {
-        w2 = getline("word #2 (or enter to quit): ");
+        w2 = getLine("word #2 (or enter to quit): ");
         if (wordIsValid(w1, w2, dic)) {
             break;
         }
@@ -79,7 +82,7 @@ string getWordTwo(string w1, Lexicon &dic) {
 
 // Returns true if w2 is of the same length as w1
 bool wordIsValid(string w1, string w2, Lexicon &dic) {
-    if (w1.length != w2.length) {
+    if (w1.length() != w2.length()) {
         cout << "The second word needs to be the same length of the first. Try again." << endl;
         return false;
     } 
@@ -111,15 +114,15 @@ void findShortestWordLadder(string w1, string w2, Lexicon &dic) {
             string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
             for (int j = 0; j < alphabet.length(); j++) { // Iterate through alphabet
-                if (topword[i] != alphabet[j]) { 
-                    copyTWord[i] = alphabet[j] // if the letter varies from original letter, replace it;
+                if (topWord[i] != alphabet[j]) { 
+                    copyTWord[i] = alphabet[j]; // if the letter varies from original letter, replace it;
                     
                     if (copyTWord == w2) { // If we found the solution, print out the stack and return to main 
                         partialLadder.push(copyTWord);
                         returnSolution(partialLadder, w1, w2);
                         return;
                     } 
-                    if (dic.contains(copyTWord) { // If modified string is a word, add it to the stack and place in the queue
+                    if (dic.contains(copyTWord)) { // If modified string is a word, add it to the stack and place in the queue
                         Stack<string> copyStack = partialLadder; // Create a copy of partialLadder
                         copyStack.push(copyTWord); // Add copyTWord to partialLadder
                         wordLadders.enqueue(copyStack); // Add partialLadder to queue
