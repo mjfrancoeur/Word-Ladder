@@ -11,6 +11,12 @@
 
 using namespace std;
 
+string getWordOne(Lexicon &dic);
+string getWordTwo(string w1, Lexicon &dic);
+Lexicon openDictionary();
+bool wordIsValid(string w1, string w2, Lexicon &dic);
+void returnSolution(Stack<string> &solution, string w1, string w2);
+void findShortestWordLadder(string w1, string w2, Lexicon &dic);
 
 int main() {
     cout << "Welcome to Word Ladder." << endl;
@@ -94,23 +100,41 @@ void findShortestWordLadder(string w1, string w2, Lexicon &dic) {
     wordLadders.enqueue(start);
     
     while (!wordLadders.isEmpty()) {
-        Set<string> usedWords; // Initialize a set to hold all words that we have addded to a partial-ladder stack
+
         Stack<string> partialLadder = wordLadders.dequeue(); // Dequeue the partial-ladder stack from the front of the queue
+
         string topWord = partialLadder.peek(); // Retrieve the word on top of the stack
         
-        Set<string> neighbors = findNeighborWords(topWord, dic);
-        for (int i = 0; i < set.size(); i++) {
-            if (!usedWords.contains(set[i]) {
-                if (set[i] == w2) {
-                    partialLadder.push(set[i]);
-                    printWordLadder(partialLadder); // Prints out the word ladder
-                    return;
+        string copyTWord = topWord; // Create copy of the top word to manipulate
+
+        for (int i = 0; i < topWord.length(); i++) { // Iterate through each letter of the word
+            string alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+            for (int j = 0; j < alphabet.length(); j++) { // Iterate through alphabet
+                if (topword[i] != alphabet[j]) { 
+                    copyTWord[i] = alphabet[j] // if the letter varies from original letter, replace it;
+                    
+                    if (copyTWord == w2) { // If we found the solution, print out the stack and return to main 
+                        partialLadder.push(copyTWord);
+                        returnSolution(partialLadder, w1, w2);
+                        return;
+                    } 
+                    if (dic.contains(copyTWord) { // If modified string is a word, add it to the stack and place in the queue
+                        Stack<string> copyStack = partialLadder; // Create a copy of partialLadder
+                        copyStack.push(copyTWord); // Add copyTWord to partialLadder
+                        wordLadders.enqueue(copyStack); // Add partialLadder to queue
+                    }
                 }
-                
-                partialLadder.push(set[i]);
-                usedWords.add(set[i]);
             }
         }
-
     }
+    cout << "There is no word ladder between these two words. Sorry!" << endl;
+}
+
+void returnSolution(Stack<string> &solution, string w1, string w2) {
+    cout << "A ladder from " << w2 << "back to " << w1 << endl;
+    while (!solution.isEmpty()) {
+        cout << solution.pop() << " ";
+    }
+    cout << "\n" << endl;
 }
