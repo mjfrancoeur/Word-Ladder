@@ -10,6 +10,7 @@
 #include "stack.h"
 #include "lexicon.h"
 #include "simpio.h"
+#include "queue.h"
 
 using namespace std;
 
@@ -108,12 +109,14 @@ void findShortestWordLadder(string w1, string w2, Lexicon &dic) {
 
         string topWord = partialLadder.peek(); // Retrieve the word on top of the stack
         
-        string copyTWord = topWord; // Create copy of the top word to manipulate
-
         for (int i = 0; i < topWord.length(); i++) { // Iterate through each letter of the word
+
             string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
+            string copyTWord = topWord; // Create copy of the top word to manipulate
+
             for (int j = 0; j < alphabet.length(); j++) { // Iterate through alphabet
+                
                 if (topWord[i] != alphabet[j]) { 
                     copyTWord[i] = alphabet[j]; // if the letter varies from original letter, replace it;
                     
@@ -135,7 +138,7 @@ void findShortestWordLadder(string w1, string w2, Lexicon &dic) {
 }
 
 void returnSolution(Stack<string> &solution, string w1, string w2) {
-    cout << "A ladder from " << w2 << "back to " << w1 << endl;
+    cout << "A ladder from " << w2 << " back to " << w1 << endl;
     while (!solution.isEmpty()) {
         cout << solution.pop() << " ";
     }
