@@ -1,4 +1,7 @@
-// TODO: remove this comment header
+// This program takes in a dictionary file and prompts the user for two words.
+// If the words are valid (contained in dictionary, of same length, different words, etc.),
+// the program then returns the shortest word ladder between the two words.
+// A word ladder being a series of words that vary by one letter only from the word prior.
 
 #include <cctype>
 #include <cmath>
@@ -12,6 +15,7 @@
 #include "simpio.h"
 #include "queue.h"
 #include "filelib.h"
+#include "set.h"
 
 using namespace std;
 
@@ -98,11 +102,15 @@ void findShortestWordLadder(string w1, string w2, Lexicon &dic) {
     start.push(w1); 
     wordLadders.enqueue(start);
     
+    Set<string> usedWords; // Keeps track of used words so that they are not re-used in mult ladders
+    usedWords.add(w1);
+    
     while (!wordLadders.isEmpty()) {
 
         Stack<string> partialLadder = wordLadders.dequeue(); // Dequeue the partial-ladder stack from the front of the queue
 
         string topWord = partialLadder.peek(); // Retrieve the word on top of the stack
+
         
         for (int i = 0; i < topWord.length(); i++) { // Iterate through each letter of the word
 
@@ -118,12 +126,14 @@ void findShortestWordLadder(string w1, string w2, Lexicon &dic) {
                     if (copyTWord == w2) { // If we found the solution, print out the stack and return to main 
                         partialLadder.push(copyTWord);
                         returnSolution(partialLadder, w1, w2);
+                        usedWords.clear();
                         return;
                     } 
-                    if (dic.contains(copyTWord)) { // If modified string is a word, add it to the stack and place in the queue
+                    if (dic.contains(copyTWord) && !usedWords.contains(copyTWord)) { // If modified string is valid and not used before...
                         Stack<string> copyStack = partialLadder; // Create a copy of partialLadder
                         copyStack.push(copyTWord); // Add copyTWord to partialLadder
                         wordLadders.enqueue(copyStack); // Add partialLadder to queue
+                        usedWords.add(copyTWord);
                     }
                 }
             }
@@ -131,6 +141,7 @@ void findShortestWordLadder(string w1, string w2, Lexicon &dic) {
     }
     cout << "There is no word ladder between these two words. Sorry!" << endl;
 }
+
 
 // Prints solution out to console.
 void returnSolution(Stack<string> &solution, string w1, string w2) {
