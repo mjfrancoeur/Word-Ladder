@@ -48,6 +48,7 @@ void runWordLadder() {
     }
 }
 
+// Opens dictionary file, if valid. Stores contents in Lexicon data structure.
 Lexicon openDictionary() {
     ifstream input;
     Lexicon lex;
@@ -131,6 +132,7 @@ void findShortestWordLadder(string w1, string w2, Lexicon &dic) {
     cout << "There is no word ladder between these two words. Sorry!" << endl;
 }
 
+// Prints solution out to console.
 void returnSolution(Stack<string> &solution, string w1, string w2) {
     cout << "A ladder from " << w2 << " back to " << w1 << endl;
     while (!solution.isEmpty()) {
