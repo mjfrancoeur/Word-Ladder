@@ -11,22 +11,20 @@
 #include "lexicon.h"
 #include "simpio.h"
 #include "queue.h"
+#include "filelib.h"
 
 using namespace std;
 
 void runWordLadder();
-string getWordOne(Lexicon &dic);
-string getWordTwo(string w1, Lexicon &dic);
+string getWord();
 Lexicon openDictionary();
-bool wordIsValid(string w1, string w2, Lexicon &dic);
+bool wordsAreValid(string w1, string w2, Lexicon &dic);
 void returnSolution(Stack<string> &solution, string w1, string w2);
 void findShortestWordLadder(string w1, string w2, Lexicon &dic);
 
 int main() {
     cout << "Welcome to Word Ladder." << endl;
     runWordLadder();
-    
-
     cout << "Have a nice day." << endl;
     return 0;
 }
@@ -36,61 +34,57 @@ void runWordLadder() {
     cout << "Please give me two English words, and I will change the first into the second by changing one letter at a time." << endl;
     Lexicon dictionary = openDictionary(); // Initializes a new lexicon containing words from a dictionary txt file
     while (true) {
-        string word1 = getWordOne(dictionary);
+        string word1 = getWord();
         if (word1 == "") { // If empty string is entered, quits program.
             return;
         }
-        string word2 = getWordTwo(word1, dictionary); 
+        string word2 = getWord();
         if (word2 == "") { // If empty string is entered, quits program.
             return;
         }
-
-        findShortestWordLadder(word1, word2, dictionary);
+        if (wordsAreValid(word1, word2, dictionary)) {
+            findShortestWordLadder(word1, word2, dictionary);
+        }
     }
 }
 
 Lexicon openDictionary() {
-    string filename = getLine("Dictionary file name? ");
-    Lexicon lex(filename); // reads in the contents from the data file. Must be text file containing 1 word per line. Or a space-efficient precompiled binary format.
+    ifstream input;
+    Lexicon lex;
+    while (true) {
+        string filename = getLine("Dictionary file name? ");
+        openFile(input, filename);
+        if (input.is_open()) {
+            lex.addWordsFromFile(filename); // reads in the contents from the data file. Must be text file containing 1 word per line.
+            break;
+        } else {
+            cout << "File does not exist. Try again." << endl;
+        }
+    }
+    
     return lex;
 }
 
-// Asks user to input the first word. Returns string in lower case.
-// TO DO: Combine with getWordTwo
-string getWordOne(Lexicon &dic) {
-    string w1;
-    while (true) {
-        w1 = getLine("Word #1 (or Enter to quit): ");
-        if (dic.contains(w1)) {
-            break;
-        }
-        cout << "I can't find that word in the dictionary. Try another word." << endl;
-    }
+// Asks user to input a word. Returns string in lower case.
+string getWord() {
+    string w1 = getLine("Word #1 (or Enter to quit): ");
     return toLowerCase(w1);
 }
 
-/* Asks user to input second word. Loops until the user inputs a second word of same length as word one */
-string getWordTwo(string w1, Lexicon &dic) {
-    string w2;
-    while (true)  {
-        w2 = getLine("word #2 (or enter to quit): ");
-        if (wordIsValid(w1, w2, dic)) {
-            break;
-        }
-    }  
-    return toLowerCase(w2);
-}
-
-// Returns true if w2 is of the same length as w1
-bool wordIsValid(string w1, string w2, Lexicon &dic) {
-    if (w1.length() != w2.length()) {
-        cout << "The second word needs to be the same length of the first. Try again." << endl;
-        return false;
-    } 
-    if (!dic.contains(w2)) {
-        cout << "I can't find that word in the dictionary. Try another word." << endl;
+// Returns true if the two words are valid
+bool wordsAreValid(string w1, string w2, Lexicon &dic) {
+    if (w1 == w2) {
+        cout << "The two words must be different." << endl;
         return false;
     }
+    if (!dic.contains(w1) || !dic.contains(w2)) {
+        cout << "The two words must be found in the dictionary." << endl;
+        return false;
+    }
+    if (w1.length() != w2.length()) {
+        cout << "The two words must be the same length." << endl;
+        return false;
+    } 
     return true;
 }
 
