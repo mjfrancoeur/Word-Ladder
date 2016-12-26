@@ -145,7 +145,7 @@ void findShortestWordLadder(string w1, string w2, Lexicon &dic) {
 
 // Prints solution out to console.
 void returnSolution(Stack<string> &solution, string w1, string w2) {
-    cout << "A ladder from " << w2 << " back to " << w1 << endl;
+    cout << "A ladder from " << w2 << " back to " << w1 << ":" << endl;
     while (!solution.isEmpty()) {
         cout << solution.pop() << " ";
     }
